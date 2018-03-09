@@ -128,7 +128,7 @@ do
 	done
 	#match jira prefix
 	if [ $l_valid -eq 1 ]; then
-		l_DESC=`p4 changes -s submitted -l -m 20 //${P4CLIENT}/...@${l_CL},${l_CL} | grep -B2 ${JIRAPREFIX}`
+		l_DESC=`p4 changes -s submitted -l -m 20 //${P4CLIENT}/...@${l_CL},${l_CL} | grep -B2 ${JIRAPREFIX} | tail -n +3`
 		if [ "${l_DESC}" == "" ]; then
 			l_valid=0
 		fi
