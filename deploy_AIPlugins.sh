@@ -99,33 +99,35 @@ function Error ()
 function extract_7z ()
 {
 	cd $TGT
-	rm -rf Esko
-	7z x *_Mac_Localisation.7z
-	mv Esko EskoLoc
+	if [ ! -d "EskoLoc" ]; then
+		rm -rf Esko
+		7z x *_Mac_Localisation.7z
+		mv Esko EskoLoc
+	fi
 
-	rm -rf Esko
-	7z x *_Mac_AI18.7z
-	mv Esko Esko18
+	if [ ! -d "Esko20" ]; then
+		rm -rf Esko
+		7z x *_Mac_AI20.7z
+		mv Esko Esko20
+	fi
 
-	rm -rf Esko
-	7z x *_Mac_AI19.7z
-	mv Esko Esko19
+	if [ ! -d "Esko21" ]; then
+		rm -rf Esko
+		7z x *_Mac_AI21.7z
+		mv Esko Esko21
+	fi
 
-	rm -rf Esko
-	7z x *_Mac_AI20.7z
-	mv Esko Esko20
+	if [ ! -d "Esko22" ]; then
+		rm -rf Esko
+		7z x *_Mac_AI22.7z
+		mv Esko Esko22
+	fi
 
-	rm -rf Esko
-	7z x *_Mac_AI21.7z
-	mv Esko Esko21
-
-	rm -rf Esko
-	7z x *_Mac_AI22.7z
-	mv Esko Esko22
-
-	rm -rf Esko
-	7z x *_Mac_AI16.7z
-	mv Esko Esko16	
+	if [ ! -d "Esko16" ]; then
+		rm -rf Esko
+		7z x *_Mac_AI16.7z
+		mv Esko Esko16	
+	fi
 }
 
 function deploy_AI ()
@@ -190,8 +192,10 @@ then
 	cd ${TGT}
 	curl -O 'http://macmini.esko-graphics.com:8080/job/PublishAIBuild/lastSuccessfulBuild/artifact/artifacts/downloads.txt'
 	cat downloads.txt | grep Mac| xargs -L1 curl -O
-	extract_7z
 fi
+
+#extract the 7z anyway, 
+extract_7z
 
 deploy_AI $AI_LINK_DIR $SDKVER
 
