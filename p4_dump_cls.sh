@@ -76,11 +76,18 @@ fi
 echo ${P4PASSWORD} | p4 login
 
 if [ "" == "${FROM}" ]; then
+	echo FROM=p4 changes -m1 "@"${P4CLIENT} "| awk {'print $2'}"
+	p4 changes -m1 @${P4CLIENT} 
+	p4 changes -m1 @${P4CLIENT} | awk {'print $2'}
 	FROM=`p4 changes -m1 @${P4CLIENT} | awk {'print $2'}`	
 fi
 
 if [ "" == "${TO}" ]; then
-	TO=`p4 changes -s submitted -m 1 //${P4CLIENT}/... | awk {'print $2'}`
+	echo TO=p4 changes -c ${P4CLIENT} -s submitted -m 1 //${P4CLIENT}/... "| awk {'print $2'}"
+	p4 set P4CLIENT=${P4CLIENT}
+	p4 changes -c ${P4CLIENT} -s submitted -m 1 //${P4CLIENT}/... 
+	p4 changes -c ${P4CLIENT} -s submitted -m 1 //${P4CLIENT}/... | awk {'print $2'}
+	TO=`p4 changes -c ${P4CLIENT} -s submitted -m 1 //${P4CLIENT}/... | awk {'print $2'}`
 fi
 
 echo
@@ -101,6 +108,7 @@ echo l_LASTSYNC=${l_LASTSYNC}
 
 l_HEAD=${TO}
 let l_FROM=l_LASTSYNC+1
+echo l_PENDING=p4 changes -s submitted -m 20 //${P4CLIENT}/...'@'${l_FROM},${l_HEAD} "| awk {'print $2'}`"
 l_PENDING=`p4 changes -s submitted -m 20 //${P4CLIENT}/...@${l_FROM},${l_HEAD} | awk {'print $2'}`
 
 echo ""
