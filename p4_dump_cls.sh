@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "Removing p4 env cache: ~/.p4enviro"
+rm -f ~/.p4enviro
+
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
@@ -108,8 +111,8 @@ echo l_LASTSYNC=${l_LASTSYNC}
 
 l_HEAD=${TO}
 let l_FROM=l_LASTSYNC+1
-echo l_PENDING=p4 changes -s submitted -m 20 //${P4CLIENT}/...'@'${l_FROM},${l_HEAD} "| awk {'print $2'}`"
-l_PENDING=`p4 changes -s submitted -m 20 //${P4CLIENT}/...@${l_FROM},${l_HEAD} | awk {'print $2'}`
+echo l_PENDING=p4 -c ${P4CLIENT} changes -s submitted -m 20 //${P4CLIENT}/...'@'${l_FROM},${l_HEAD} "| awk {'print $2'}"
+l_PENDING=`p4 -c ${P4CLIENT} changes -s submitted -m 20 //${P4CLIENT}/...@${l_FROM},${l_HEAD} | awk {'print $2'}`
 
 echo ""
 echo "=========="
@@ -136,7 +139,7 @@ do
 	done
 	#match jira prefix
 	if [ $l_valid -eq 1 ]; then
-		l_DESC=`p4 changes -s submitted -l -m 20 //${P4CLIENT}/...@${l_CL},${l_CL} | grep -B2 ${JIRAPREFIX} | tail -n +3`
+		l_DESC=`p4 -c ${P4CLIENT} changes -s submitted -l -m 20 //${P4CLIENT}/...@${l_CL},${l_CL} | grep -B2 ${JIRAPREFIX} | tail -n +3`
 		if [ "${l_DESC}" == "" ]; then
 			l_valid=0
 		fi
@@ -162,3 +165,6 @@ echo P4_CL_DESC=${l_MSG} >> ${OUTPUT}
 echo ""
 echo ">> ${OUTPUT}"
 cat ${OUTPUT}
+
+echo "Removing p4 env cache: ~/.p4enviro"
+rm -f ~/.p4enviro
